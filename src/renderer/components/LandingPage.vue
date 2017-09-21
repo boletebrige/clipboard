@@ -1,153 +1,52 @@
 <template>
   <v-card>
     <v-card-title>
-      Clipboard Content
-      <v-spacer></v-spacer>
-      <v-text-field
-        append-icon="search"
-        label="Search"
-        single-line
-        hide-details
-        v-model="search"
-      ></v-text-field>
+      <button @click="getLocation()">click</button>
     </v-card-title>
-    <v-data-table
-        v-bind:headers="headers"
-        v-bind:items="items"
-        v-bind:search="search"
-        v-bind:pagination.sync="pagination"
-      >
-      <template slot="items" scope="props">
-        <td>
-          <v-edit-dialog
-            lazy
-          > {{ props.item.name }}
-            <v-text-field
-              slot="input"
-              label="Edit"
-              v-model="props.item.name"
-              single-line
-              counter
-              :rules="[max25chars]"
-            ></v-text-field>
-          </v-edit-dialog>
-        </td>
-        <td class="text-xs-left">
-          {{ props.item.time }}
-        </td>
-        <td class="text-xs-right">
-          <v-expansion-panel>
-            <v-expansion-panel-content>
-              <div slot="header">{{ props.item.cData.substring(0,80) }}</div>
-              <v-card>
-                <v-card-text>{{ props.item.cData }}</v-card-text>
-              </v-card>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </td>
-      </template>
-      <template slot="pageText" scope="{ pageStart, pageStop }">
-        From {{ pageStart }} to {{ pageStop }}
-      </template>
-    </v-data-table>
+    <div id="demo"></div>
+
   </v-card>
 </template>
 
 <script>
-  import SystemInformation from './LandingPage/SystemInformation'
-  var moment = require('moment');
-  const Store = require('electron-store');
 
-  const memory = new Store();
 
-  const {clipboard} = require('electron')
-
-  // function getContent(){
-  //   if (temp.text !== clipboard.readText()){
-  //     // memory.set('text', clipboard.readText());
-  //     // memory.set('time',Date());
-  //     temp = { text: clipboard.readText(), time: Date() };
-  //     let write = document.createElement('tr');
-  //     content.push(temp);
-  //     console.log(temp.text);
-  //     write.innerHTML = `
-  //         <tr>
-  //           <th><p>${ temp.time }</p></th>
-  //           <td><p>${ temp.text.toString() }</p></td>
-  //         </tr>`;
-  //     document.getElementById('data-display').appendChild(write);
-  //   }
-  //   memory.set('data',content);
-  // }
-  // setInterval(function(){ getContent(); }, 1000);
 
   export default {
     name: 'landing-page',
-    components: { SystemInformation },
+    components: {  },
     data() {
       return {
-        max25chars: (v) => v.length <= 25 || 'Input too long!',
-        tmp: '',
-        search: '',
-        pagination: {
-          sortBy: 'time',
-          descending: true
-        },
-        headers: [
-          {
-            text: 'Date',
-            align: 'left',
-            value: 'name'
-          },
-          {
-            text: 'Time',
-            align: 'left',
-            value: 'time'
-          },
-          { text: 'Content', align: 'left', value: 'cData', sortable: false }
-        ],
-        items: [],
-        temp: {text: null }
+        test: null
       }
     },
     methods: {
       getContent(){
-        if ((this.temp.text !== clipboard.readText())){
-          
-          if(memory.get('data')){
-            console.log(this.temp.text)
-            if(memory.get('data')[memory.get('data').length - 1].cData !== clipboard.readText()){
-              this.items = memory.get('data');
-              this.items.push({name: moment(Date()).format('DD.MM.YYYY'), time: moment(Date()).format('HH:mm:ss') , cData: clipboard.readText()})
-              memory.set('data', this.items)
-              this.temp = { text: clipboard.readText()};
-              console.log(memory.path)
-            }else{
-              this.items = memory.get('data');
-              this.temp = { text: memory.get('data')[memory.get('data').length - 1].cData};
-            }
-          }else{
-            console.log('else')
-            this.items.push({name: moment(Date()).format('DD.MM.YYYY'), time: moment(Date()).format('HH:mm:ss') , cData: clipboard.readText()})
-            this.temp = { text: clipboard.readText()};
-            memory.set('data', this.items)
-            console.log(memory.get('data'));
-          }
-        }
 
+
+      },
+      getLocation() {
+          if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition(this.showPosition);
+          } else {
+              let x = document.getElementById("demo");
+              x.innerHTML = "Geolocation is not supported by this browser.";
+          }
+      },
+      showPosition(position) {
+          let x = document.getElementById("demo");
+          x.innerHTML = "Latitude: " + position.coords.latitude + 
+          "<br>Longitude: " + position.coords.longitude;
       }
     },
     mounted(){
-      var that = this;
-      setInterval(function(){ that.getContent() }, 1000);
 
-      
     }
   }
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
+
 
 
 </style>

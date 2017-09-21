@@ -16,6 +16,16 @@ export default new Router({
       component: require('@/components/LandingPage/SystemInformation')
     },
     {
+      path: '/clipboard-history',
+      name: 'clipboard-history',
+      component: require('@/components/ClipboardHistory/ClipboardHistory')
+    },
+    {
+      path: '/notes',
+      name: 'notes',
+      component: require('@/components/Notes/Notes')
+    },
+    {
       path: '*',
       redirect: '/'
     }

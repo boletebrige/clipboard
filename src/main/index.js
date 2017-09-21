@@ -1,5 +1,7 @@
 import { app, BrowserWindow } from 'electron'
 
+process.env.GOOGLE_API_KEY = 'AIzaSyCMSJB8YGez5izQe6GjdLViIaaDM6hOf-4'
+
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
